@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useEffect, useState } from "react";
+import { AddTodo } from "./components/AddTodo";
+import { TodoList } from "./components/TodoList";
+import { TodoMock } from "./types";
+import { todoMock } from "./mocks/todo-mock";
+import { TodoListFooter } from "./components/TodoListFooter";
+
+
+
+export const App = () => {
+
+  const [todos, setTodos] = useState<TodoMock[] | []>(todoMock);
+  const [filterTodos, setFilterTodos] = useState<TodoMock[] | []>(todos)
+
+  useEffect(() => {
+    // Le composant est monté, après le premier rendu, le useEffect se déclenche
+    setFilterTodos(todos);
+    // On passe une dépendence, le useEffect surveille le state "todos". si il est modifié, le useEffect se redéclenche et réexucte toute sa logique
+    // return () => {
+      // Nettoyer l'effet de bord ( souvent avec les timeOut, timeInterval)
+    // }
+  }, [todos]);
 
   return (
-    <>
+    <div className="App">
+      <header>
+        <h1>Coni Todo List </h1>
+      </header>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <AddTodo todos={todos} setTodos={setTodos} />
+        <div>
+          <TodoList todos={todos} setTodos={setTodos} filterTodos={filterTodos} />
+          <TodoListFooter todos={todos} setFilterTodos={setFilterTodos} setTodos={setTodos} />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
+    </div>
+  );
+};
